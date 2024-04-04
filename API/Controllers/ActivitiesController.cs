@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using Application.Activities;
 using Domain;
 using MediatR;
@@ -13,24 +14,23 @@ namespace API.Controllers
 
         // api/activities
         [HttpGet]
-        public async Task<ActionResult<List<Activity>>> GetActivities()
+        public async Task<IActionResult> GetActivities()
         {
-            return await Mediator.Send(new ActivitiesList.Query());
+            return HandleResult(await Mediator.Send(new ActivitiesList.Query()));
         }
 
         // api/activities/:id
         [HttpGet("{id}")]
-        public async Task<ActionResult<Activity>> GetActivity(Guid id)
+        public async Task<IActionResult> GetActivity(Guid id)
         {
-            return await Mediator.Send(new ActivityDetails.Query{ Id = id });
+            return HandleResult(await Mediator.Send(new ActivityDetails.Query{ Id = id }));
         }
         
         // api/activities
         [HttpPost]
         public async Task<IActionResult> CreateActivity(Activity activity)
         {
-            await Mediator.Send(new ActivityCreate.Command{ Activity = activity });
-            return Ok();
+            return HandleResult(await Mediator.Send(new ActivityCreate.Command{ Activity = activity }));
         }
 
          // api/activities/:id
